@@ -1,12 +1,14 @@
-import * as THREE from "three";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ModelView from "./ModelView";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { yellowImg } from "../utils";
-import { View } from "@react-three/drei";
+
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
+import { View } from "@react-three/drei";
 import { models, sizes } from "../constants";
+import { animateWithGsapTimeline } from "../utils/animation";
 
 const Model = () => {
   const [size, setsize] = useState("small");
@@ -24,6 +26,24 @@ const Model = () => {
 
   const [smallRotation, setSmallRotation] = useState(0);
   const [largeRotation, setLargeRotation] = useState(0);
+
+  const tl = gsap.timeline();
+
+  useEffect(() => {
+    if (size === 'large') {
+      animateWithGsapTimeline(tl, small, smallRotation, "#view1", "#view2", {
+        transform: 'translateX(-100%)',
+        duration: 2
+      })
+    }
+    
+    if (size === 'small') {
+      animateWithGsapTimeline(tl, large, largeRotation, "#view2", "#view1", {
+        transform: 'translateX(0)',
+        duration: 2
+      })
+    }
+  }, [size])
 
   useGSAP(() => {
     gsap.to(
@@ -70,8 +90,8 @@ const Model = () => {
                 position: "fixed",
                 top: 0,
                 bottom: 0,
-                right: 0,
                 left: 0,
+                right: 0,
                 overflow: "hidden",
               }}
               eventSource={document.getElementById("root")}
@@ -82,6 +102,7 @@ const Model = () => {
 
           <div className="mx-auto w-full">
             <p className="text-sm font-light text-center mb-5">{model.title}</p>
+            
             <div className="flex-center">
               <ul className="color-container">
                 {models.map((item, i) => (
