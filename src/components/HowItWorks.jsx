@@ -60,6 +60,7 @@ const HowItWorks = () => {
                 autoPlay
                 preload="none"
                 ref={videoRef}
+                loop
               >
                 <source src={frameVideo} type="video/mp4" />
               </video>
